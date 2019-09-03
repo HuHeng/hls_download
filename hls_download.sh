@@ -24,8 +24,10 @@ echo "download m3u8 done"
 # match 
 m3u8_base_url=${m3u8_url%/*}"/"
 m3u8_file_name=${m3u8_url##*/}
+m3u8_host_url=$(echo "$m3u8_url" | grep -P "https?://.*?/" -o)
 echo "m3u8 http dir: ${m3u8_base_url}"
 echo "m3u8 file name: ${m3u8_file_name}"
+echo "m3u8 host url: ${m3u8_host_url}"
 
 sub_dir=""
 
@@ -36,6 +38,8 @@ if [ `echo ${line} | grep -c "\.ts$"` -eq '1' ]; then
     echo "find ts url: ${line}"
     if [ `echo ${line} | grep -c "http://"` -eq '1' ] || [ `echo ${line} | grep -c "https://"` -eq '1' ]; then
         ts_uri=${line}
+    elif [ ${line:0:1} = "/" ]; then
+        ts_uri="${m3u8_host_url}${line:1}"
     else
         ts_uri=${m3u8_base_url}${line}
         if [ -z ${sub_dir} ]; then
