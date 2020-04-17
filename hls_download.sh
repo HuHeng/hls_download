@@ -42,11 +42,14 @@ if [ `echo ${line} | grep -c "\.ts$"` -eq '1' ]; then
         ts_uri="${m3u8_host_url}${line:1}"
     else
         ts_uri=${m3u8_base_url}${line}
+        #use the first subdir, so do it only once
         if [ -z ${sub_dir} ]; then
-            echo "mk subdir: "${sub_dir}
-            sub_dir=${line%/*}
-            mkdir -p $sub_dir
-            cd $sub_dir
+            if [ `echo ${line} | grep -c "/"` -eq '1' ]; then
+                echo "mk subdir: "${sub_dir}
+                sub_dir=${line%/*}
+                mkdir -p $sub_dir
+                cd $sub_dir
+            fi
         fi
     fi
     
